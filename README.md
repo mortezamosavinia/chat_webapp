@@ -1,5 +1,5 @@
 # Django Chat app
-این یک پروژه backend با فریم ورک جنگو و زبان python است که فران آن با html , css تکمیل شده است 
+این یک پروژه backend با فریم ورک جنگو و زبان python است که فرانت آن با html , css تکمیل شده است 
 
 # Venv
 
