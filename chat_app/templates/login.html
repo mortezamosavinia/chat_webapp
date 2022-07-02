@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static "chat_app/style.css" %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <title>Login page</title>
+</head>
+<body>
+    <div class="chat_flexbox_container">
+        <div class="chat_wrapper shadow-lg mb-5 rounded">
+            <div class="border-bottom border-2" style="margin-bottom: 30px;">
+            <p class="name text-start text-capitalize fs-3 lh-sm">Login here:</p>
+            </div>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-floating mb-3">
+                    <input type="username" class="form-control" id="floatingUsername" name="username" placeholder="Username">
+                    <label for="floatingUsername">Username</label>
+                </div>
+                
+                <div class="form-floating mb-3" name="password">
+                    <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Password">
+                    <label for="floatingPassword">Password</label>
+                </div>
+                
+                <div class="d-grid gap-2">
+                <button class="btn btn-primary text-white" value="submit" type="submit" 
+                style="color: rgba(26, 48, 241, 0.767); margin-bottom: 30px;">Login</button>
+                </div>
+
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-danger" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </form>
+            <div class="position-relative">
+                <div class="position-absolute bottom-0 end-0">
+                    <a href="{% url "register" %}">Don't have account? Register here!</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

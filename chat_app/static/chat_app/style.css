@@ -1,0 +1,136 @@
+body {
+    background-image: linear-gradient(rgba(124, 124, 124, 0.527),rgb(253, 253, 253));
+    background-repeat: no-repeat;
+    background-size: contain;
+    font-family: Helvetica,
+}
+
+html {
+    height: 100%
+}
+
+.name{
+    font-family:'Courier New';
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.chat_flexbox_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu_wrapper {
+    flex-shrink: 0;
+    background-color:#f2f2f2;
+    width: 300px;
+    height: 750px;
+    margin: 10px;
+    margin-top: 50px;
+    margin-left: 50px;
+    padding: 10px 10px;
+    padding-top: 10px;
+}
+
+.chat_wrapper {
+    background-color:#f2f2f2;
+    width: 740px;
+    height: 750px;
+    margin: 15px;
+    margin-top: 50px;
+    padding: 15px;
+}
+
+.chat {
+    background-color:#f2f2f2;
+    width: auto;
+    height: 560px;
+    padding: 15px 15px;
+    margin: auto;
+    margin-bottom: 10px;
+}
+
+.menu {
+    background-color:#f2f2f2;
+    width: auto;
+    height: 600px;
+    margin: auto; 
+}
+
+.mycustom {
+    position: relative;
+    height: 50px;
+}
+.mycustom input[type=text] {
+    border: none;
+    width: 100%;
+    padding-right: 123px;
+}
+.mycustom .input-group-prepend {
+    position: absolute;
+    right: 10px;
+    top: -5px;
+    bottom: 5px;z-index:9;
+}
+
+.top_bar_flexbox {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu_name {
+    background-color:#f2f2f2;
+    width: auto;
+    height: 70px;
+    border-radius: 3px;
+    padding-top: 7px;
+    padding-left: 10px;
+}
+
+.menu_name:hover {
+    background-color:rgba(124, 124, 124, 0.527);
+    width: auto;
+    height: 70px;
+    border-radius: 3px;
+}
+
+.menu a {
+    font-family:'Courier New';
+    font-size: 20px;
+    color: rgba(26, 48, 241, 0.767);
+    
+}
+
+.menu a:link {
+    text-decoration: none;
+}
+
+.menu_name img {
+    width: 55px;
+    height: 55px;
+}
+
+.line-center{
+    margin:0;padding:0 10px;
+    background:#f2f2f2;
+    display:inline-block;
+}
+h5{
+    font-family:'Courier New';
+    text-align:center;
+    position:relative;
+    z-index:2;
+    color: rgb(107, 107, 107);
+    
+}
+h5:after{
+    content:"";
+    position:absolute;
+    top:50%;
+    left:0;
+    right:0;
+    border-top:solid 1px rgb(107, 107, 107);
+    z-index:-1;
+}

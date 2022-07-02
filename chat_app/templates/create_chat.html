@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title%}{{ room_user_name }}{% endblock%}
+
+{% block menu %}
+<div class="border-bottom border-2" style="margin-bottom: 20px;">
+    <div class="top_bar_flexbox">
+        <div>
+            {% if user.userprofile.picture %}
+                <img src="{{ user.userprofile.picture.url }}" class="rounded-circle" alt="user_image" style="width: 55px; height: 55px;">
+            {% else %} 
+                <img src="{% static "profile_pics/user_image.jpg" %}" class="rounded-circle" alt="user_image" style="width: 55px; height: 55px;">
+            {% endif %}
+        </div>
+       <div>
+            <p class="name text-start text-capitalize fs-3 lh-sm" style="margin-top: 15px;">{{ username }}</p>
+       </div>
+       <div>
+            <a href="{% url "profile" %}">
+                <i class="bi bi-gear-fill" style="font-size: 20px; color: rgba(26, 48, 241, 0.767)"></i>
+            </a>
+       </div> 
+    </div>
+    
+</div>
+
+<div class="menu overflow-auto">
+    {% for users, item in room.items %}
+        <a href="{% url "room" item %}">
+            <div class="menu_name">
+                {% if users.userprofile.picture.url %}
+                    <img src="{{ users.userprofile.picture.url }}" class="rounded-circle" alt="user_image">
+                {% else %}
+                    <img src="{% static "profile_pics/user_image.jpg" %}" class="rounded-circle" alt="user_image">
+                {% endif %}
+                {{ users }}  
+            </div>
+        </a>
+    {% endfor %}
+</div>
+{% endblock %}
+
+
+
+
+{% block content %}
+
+{{ room_name|json_script:"room-name" }}
+{{ request.user.username|json_script:"user_username" }}
+
+<div class="position-relative">
+    <div class="border-bottom border-2">
+        <div class="top_bar_flexbox">
+            <div>
+                    {% if room_user_name.userprofile.picture.url %}
+                        <img src="{{ room_user_name.userprofile.picture.url }}" class="rounded-circle" alt="user_image" style="width: 55px; height: 55px;">
+                    {% else %}
+                        <img src="{% static "profile_pics/user_image.jpg" %}" class="rounded-circle" alt="user_image" style="width: 55px; height: 55px;">
+                    {% endif %} 
+            </div>
+            <div>
+                <p class="name text-start text-capitalize fs-3 lh-sm">{{ room_user_name }}</p>
+            </div>
+            <div>
+                <i class="bi bi-camera-video-fill" style="font-size: 40px; color: rgba(26, 48, 241, 0.767);"></i>
+                <i class="bi bi-telephone-forward-fill"
+                    style="font-size: 35px; color: rgba(26, 48, 241, 0.767);margin-left: 20px;margin-right: 35px;"></i>
+            </div>
+        </div>
+    </div>
+</div><br>
+<div class="chat overflow-auto" id="chat">
+    {% if user_messages %}
+        {% for mess in user_messages %}
+            {% if mess.username == request.user.username %}
+            <figure>
+                <blockquote class="blockquote">
+                    <div class="badge text-wrap text-start fs-6 lh-sm" style="width: 15rem; background-color: rgba(26, 48, 241, 0.767);">
+                        {{ mess.message }} 
+                    </div>
+                </blockquote>
+                <figcaption class="blockquote-footer">{{ mess.username }} - {{ mess.created_at }}</figcaption>
+            </figure>
+            {% else %}
+            <figure class="text-end">
+                <blockquote class="blockquote">
+                    <div class="badge text-wrap text-start fs-6 lh-sm" style="width: 15rem; background-color: #757575;">
+                        {{ mess.message }} 
+                    </div>
+                </blockquote>
+                <figcaption class="blockquote-footer">{{ mess.username }} - {{ mess.created_at }}</figcaption>
+            </figure>
+            {% endif %}
+        {% endfor %}
+        <h5><span  class="line-center">History</span></h5>
+        {% endif %}
+    <div id="new-message-chat"></div>
+</div>
+<div class="input-group mycustom shadow-lg">
+    <input type="text" class="form-control rounded" placeholder="Type a message..." id="input" required>
+    <div class="mycustom input-group-prepend">
+        <i class="bi bi-arrow-right-circle-fill" id="submit" type="button" value="Send"
+            style="font-size: 40px; color: rgba(26, 48, 241, 0.767);"></i>
+    </div>
+</div>
+
+
+
+<script>
+    var objDiv = document.getElementById("chat");
+    objDiv.scrollTop = objDiv.scrollHeight;
+
+    const user_username = JSON.parse(document.getElementById('user_username').textContent);
+
+
+    document.querySelector('#input').focus();
+    document.querySelector("#submit").onclick = function (e) {
+        const messageInputDom = document.querySelector("#input");
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            "message": message,
+            "username": user_username,
+        }));
+        messageInputDom.value = "";
+    };
+
+
+    const roomName = JSON.parse(document.getElementById("room-name").textContent);
+
+    const chatSocket = new WebSocket(
+        "ws://" +
+        window.location.host +
+        "/ws/chat/" +
+        roomName +
+        "/"
+    );
+
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        console.log(data)
+        broadcastMessage(data.message, data.username)
+        scrollBottom()
+
+    };
+
+    function scrollBottom() {
+        let chat_box = document.querySelector(".chat")
+        chat_box.scrollTop = chat_box.scrollHeight
+    }
+
+    function broadcastMessage(msg, usrnm) {
+        let newDiv = document.createElement("div");
+
+
+        if (usrnm == '{{ request.user.username }}') {
+            var msg1 = `<figure>
+                            <blockquote class="blockquote">
+                                <div class="badge text-wrap text-start fs-6 lh-sm" style="width: 15rem; background-color: rgba(26, 48, 241, 0.767);">
+                                    ${msg}
+                                </div>
+                            </blockquote>
+                            <figcaption class="blockquote-footer">${usrnm}   ${new Date().toLocaleTimeString()}</figcaption>
+                        </figure>`
+
+        } else {
+            var msg1 = `<figure class="text-end">
+                            <blockquote class="blockquote">
+                                <div class="badge text-wrap text-start fs-6 lh-sm" style="width: 15rem; background-color: #757575;">
+                                    ${msg}
+                                </div>
+                            </blockquote>
+                            <figcaption class="blockquote-footer">${usrnm}   ${new Date().toLocaleTimeString()}</figcaption>
+                        </figure>`
+        }
+
+
+        newDiv.innerHTML = msg1;
+
+        let currentDiv = document.getElementById("new-message-chat");
+        let parentDiv = currentDiv.parentNode;
+        parentDiv.insertBefore(newDiv, currentDiv);
+
+    };
+</script>
+{% endblock %}
